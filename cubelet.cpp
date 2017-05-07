@@ -92,7 +92,7 @@ void Cubelet::rotate(int whichFacelet, int whichAngle)
 {
     assert(whichFacelet >= 0 && whichFacelet < FACELETID_MAX);
     assert(whichAngle >= 0 && whichAngle < ANGLEID_MAX);
-    int rotTable[][4] = {
+    static const int rotTable[][4] = {
         { FACELETID_TOP, FACELETID_RIGHT, FACELETID_BOTTOM, FACELETID_LEFT, },
         { FACELETID_TOP, FACELETID_BACK, FACELETID_BOTTOM, FACELETID_FRONT, },
         { FACELETID_TOP, FACELETID_LEFT, FACELETID_BOTTOM, FACELETID_RIGHT, },
@@ -100,7 +100,7 @@ void Cubelet::rotate(int whichFacelet, int whichAngle)
         { FACELETID_FRONT, FACELETID_RIGHT, FACELETID_BACK, FACELETID_LEFT, },
         { FACELETID_BACK, FACELETID_RIGHT, FACELETID_FRONT, FACELETID_LEFT, },
     };
-    int angleTable[] = { 1, 2, 3 };
+    static const int angleTable[] = { 1, 2, 3 };
     int temp = m_faceletCols[rotTable[whichFacelet][0]];
     for (int i = 0; i < 3; i++)
     {
@@ -130,7 +130,7 @@ void Cubelet::render() const
         glEnd();
         if (m_faceletVisible[i])
         {
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, m_cols[i]);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, m_cols[m_faceletCols[i]]);
             glMaterialf(GL_FRONT, GL_SHININESS, m_faceletShine);
             renderFacelet();
         }

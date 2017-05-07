@@ -10,9 +10,11 @@ endif()
 set(SRCS
     main.cpp
     cubelet.cpp
+    cube.cpp
 )
 set(HDRS
     cubelet.h
+    cube.h
 )
 include_directories(${OPENGL_INCLUDE_DIR} ${FREEGLUT_INCLUDE_DIRS})
 add_executable(shapeshift ${SRCS} ${HDRS})
