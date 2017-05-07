@@ -2,35 +2,52 @@
 #include "cube.h"
 #include <math.h>
 Cube cu;
+int angle;
+void timer(int)
+{
+    if (cu.isRotating())
+    {
+        cu.updateRotation();
+        glutTimerFunc(10, timer, 0);
+    }
+}
 
 void keyboard(unsigned char c, int, int)
 {
-    bool refresh = true;
+    bool refresh = !cu.isRotating();
 
     switch (c)
     {
     case 'f':
-        cu.rotate(FACELETID_FRONT, ANGLEID_90);
+        cu.beginRotation(FACELETID_FRONT, angle);
         break;
     case 'b':
-        cu.rotate(FACELETID_BACK, ANGLEID_90);
+        cu.beginRotation(FACELETID_BACK, angle);
         break;
     case 'l':
-        cu.rotate(FACELETID_LEFT, ANGLEID_90);
+        cu.beginRotation(FACELETID_LEFT, angle);
         break;
     case 'r':
-        cu.rotate(FACELETID_RIGHT, ANGLEID_90);
+        cu.beginRotation(FACELETID_RIGHT, angle);
         break;
     case 't':
-        cu.rotate(FACELETID_TOP, ANGLEID_90);
+        cu.beginRotation(FACELETID_TOP, angle);
         break;
     case 'm':
-        cu.rotate(FACELETID_BOTTOM, ANGLEID_90);
+        cu.beginRotation(FACELETID_BOTTOM, angle);
+        break;
+    case 'z':
+        refresh = false;
+        angle = (angle + 1) % ANGLEID_MAX;
         break;
     default:
         refresh = false;
     }
-    if (refresh) glutPostRedisplay();
+    if (refresh)
+    {
+        timer(0);
+        glutPostRedisplay();
+    }
 }
 
 void display()
