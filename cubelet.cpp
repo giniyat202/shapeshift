@@ -19,6 +19,8 @@ const float Cubelet::m_blankShine = 1.0f;
 const double Cubelet::m_faceletLength = 0.45;
 const double Cubelet::m_faceletThickness = 0.001;
 const double Cubelet::m_faceletRadius = 0.10;
+const float Cubelet::m_faceletSpecular[3] = { 0.6f, 0.6f, 0.6f, };
+const float Cubelet::m_blankSpecular[3] = { 0.1f, 0.1f, 0.1f, };
 
 const int VERTS_PER_CIRCLE = 80;
 const double VERTS_DIFF = 2.0 * M_PI / VERTS_PER_CIRCLE;
@@ -121,6 +123,7 @@ void Cubelet::render() const
         glRotated(anglex[i], 1.0, 0.0, 0.0);
         glTranslated(0.0, 0.0, 0.5);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, m_cols[COLORID_BLANK]);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, m_blankSpecular);
         glMaterialf(GL_FRONT, GL_SHININESS, m_blankShine);
         glBegin(GL_QUADS);
         glVertex3d(0.5, 0.5, 0.0);
@@ -131,6 +134,7 @@ void Cubelet::render() const
         if (m_faceletVisible[i])
         {
             glMaterialfv(GL_FRONT, GL_DIFFUSE, m_cols[m_faceletCols[i]]);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, m_faceletSpecular);
             glMaterialf(GL_FRONT, GL_SHININESS, m_faceletShine);
             renderFacelet();
         }

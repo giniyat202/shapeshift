@@ -3,6 +3,9 @@
 #include <math.h>
 Cube cu;
 int angle;
+double rot;
+bool autorot;
+
 void timer(int)
 {
     if (cu.isRotating())
@@ -10,6 +13,16 @@ void timer(int)
         cu.updateRotation();
         glutTimerFunc(10, timer, 0);
     }
+}
+
+void t2(int)
+{
+    if (autorot)
+    {
+        rot += 2.0;
+        glutPostRedisplay();
+    }
+    glutTimerFunc(50, t2, 0);
 }
 
 void keyboard(unsigned char c, int, int)
@@ -40,6 +53,10 @@ void keyboard(unsigned char c, int, int)
         refresh = false;
         angle = (angle + 1) % ANGLEID_MAX;
         break;
+    case 'q':
+        refresh = false;
+        autorot = !autorot;
+        break;
     default:
         refresh = false;
     }
@@ -53,7 +70,10 @@ void keyboard(unsigned char c, int, int)
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    glRotated(rot, 0.0, 1.0, 0.0);
     cu.render();
+    glPopMatrix();
     glFlush();
     glutSwapBuffers();
 }
@@ -83,6 +103,7 @@ int main(int argc, char **argv)
     init3d();
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    t2(0);
     glutMainLoop();
     return 0;
 }

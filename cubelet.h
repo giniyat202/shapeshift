@@ -61,6 +61,8 @@ private:
     static const double m_faceletLength;
     static const double m_faceletThickness;
     static const double m_faceletRadius;
+    static const float m_faceletSpecular[3];
+    static const float m_blankSpecular[3];
 };
 
 #endif
