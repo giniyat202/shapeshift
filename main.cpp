@@ -1,79 +1,40 @@
 #include <GL/glut.h>
-#include "cube.h"
-#include <math.h>
-Cube cu;
-int angle;
-double rot;
-bool autorot;
+#include "gamescene.h"
+GameScene *zz;
 
-void timer(int)
+void keyboard(unsigned char key, int x, int y)
 {
-    if (cu.isRotating())
-    {
-        cu.updateRotation();
-        glutTimerFunc(10, timer, 0);
-    }
+    zz->keyboard(key, x, y);
 }
-
-void t2(int)
+void keyboardUp(unsigned char key, int x, int y)
 {
-    if (autorot)
-    {
-        rot += 2.0;
-        glutPostRedisplay();
-    }
-    glutTimerFunc(50, t2, 0);
+    zz->keyboardUp(key, x, y);
 }
-
-void keyboard(unsigned char c, int, int)
+void special(int key, int x, int y)
 {
-    bool refresh = !cu.isRotating();
-
-    switch (c)
-    {
-    case 'f':
-        cu.beginRotation(FACELETID_FRONT, angle);
-        break;
-    case 'b':
-        cu.beginRotation(FACELETID_BACK, angle);
-        break;
-    case 'l':
-        cu.beginRotation(FACELETID_LEFT, angle);
-        break;
-    case 'r':
-        cu.beginRotation(FACELETID_RIGHT, angle);
-        break;
-    case 't':
-        cu.beginRotation(FACELETID_TOP, angle);
-        break;
-    case 'm':
-        cu.beginRotation(FACELETID_BOTTOM, angle);
-        break;
-    case 'z':
-        refresh = false;
-        angle = (angle + 1) % ANGLEID_MAX;
-        break;
-    case 'q':
-        refresh = false;
-        autorot = !autorot;
-        break;
-    default:
-        refresh = false;
-    }
-    if (refresh)
-    {
-        timer(0);
-        glutPostRedisplay();
-    }
+    zz->special(key, x, y);
+}
+void specialUp(int key, int x, int y)
+{
+    zz->specialUp(key, x, y);
+}
+void reshape(int width, int height)
+{
+    zz->reshape(width, height);
+}
+void mouse(int button, int state, int x, int y)
+{
+    zz->mouse(button, state, x, y);
+}
+void motion(int x, int y)
+{
+    zz->motion(x, y);
 }
 
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
-    glRotated(rot, 0.0, 1.0, 0.0);
-    cu.render();
-    glPopMatrix();
+    zz->render();
     glFlush();
     glutSwapBuffers();
 }
@@ -81,16 +42,10 @@ void display()
 void init3d()
 {
     glClearColor(0.0, 0.0, 0.0, 1.0);
-    glMatrixMode(GL_PROJECTION);
-    gluPerspective(70.0, 640.0 / 480.0, 1.0, 50.0);
-    glMatrixMode(GL_MODELVIEW);
-    glTranslated(0.0, 0.0, -7.0);
-    glRotated(45.0, 0.0, 1.0, 0.0);
-    glRotated(30.0, cos(3.1415 / 4.0), 0.0, sin(3.1415 / 4.0));
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_CULL_FACE);
 }
 
 int main(int argc, char **argv)
@@ -101,9 +56,16 @@ int main(int argc, char **argv)
     glutInitWindowSize(640, 480);
     glutCreateWindow("memes");
     init3d();
+    zz = new GameScene;
+    zz->reshape(640, 480);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
-    t2(0);
+    glutKeyboardUpFunc(keyboardUp);
+    glutSpecialFunc(special);
+    glutSpecialUpFunc(specialUp);
+    glutReshapeFunc(reshape);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
     glutMainLoop();
     return 0;
 }

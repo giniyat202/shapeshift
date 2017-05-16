@@ -3,6 +3,14 @@
 
 #include "cubelet.h"
 
+enum ROTAXIS
+{
+    ROTAXIS_X = 0,
+    ROTAXIS_Y,
+    ROTAXIS_Z,
+    ROTAXIS_MAX,
+};
+
 class Cube
 {
 public:
@@ -12,9 +20,11 @@ public:
     void beginRotation(int whichFace, int whichAngle);
     void updateRotation();
     bool isRotating() const;
+    void rotateCube(int whichAxis, double angle);
     void render() const;
 private:
     void rotate(int whichFace, int whichAngle);
+    static void getAxes(double axes[][3]);
     Cubelet *m_face[FACELETID_MAX][9];
     Cubelet m_cubelet[3][3][3];
     int m_animStep;

@@ -12,7 +12,7 @@ const float Cubelet::m_defCols[COLORID_MAX][3] = {
     { 0.0f, 0.0f, 1.0f, }, // blue
     { 1.0f, 1.0f, 1.0f, }, // white
     { 1.0f, 1.0f, 0.0f, }, // yellow
-    { 0.1f, 0.1f, 0.1f, }, // black
+    { 0.05f, 0.05f, 0.05f, }, // black
 };
 const float Cubelet::m_faceletShine = 70.0f;
 const float Cubelet::m_blankShine = 1.0f;
@@ -20,7 +20,7 @@ const double Cubelet::m_faceletLength = 0.45;
 const double Cubelet::m_faceletThickness = 0.001;
 const double Cubelet::m_faceletRadius = 0.10;
 const float Cubelet::m_faceletSpecular[3] = { 0.6f, 0.6f, 0.6f, };
-const float Cubelet::m_blankSpecular[3] = { 0.1f, 0.1f, 0.1f, };
+const float Cubelet::m_blankSpecular[3] = { 0.0f, 0.0f, 0.0f, };
 
 const int VERTS_PER_CIRCLE = 80;
 const double VERTS_DIFF = 2.0 * M_PI / VERTS_PER_CIRCLE;

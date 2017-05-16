@@ -11,10 +11,14 @@ set(SRCS
     main.cpp
     cubelet.cpp
     cube.cpp
+    scene.cpp
+    gamescene.cpp
 )
 set(HDRS
     cubelet.h
     cube.h
+    scene.h
+    gamescene.h
 )
 include_directories(${OPENGL_INCLUDE_DIR} ${FREEGLUT_INCLUDE_DIRS})
 add_executable(shapeshift ${SRCS} ${HDRS})

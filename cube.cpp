@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <GL/glut.h>
 #include <stdio.h>
-
+#include <math.h>
 int Cube::m_stepsPerTurn = 200;
 
 Cube::Cube() :
@@ -123,6 +123,23 @@ bool Cube::isRotating() const
     return m_animStep != 0;
 }
 
+void Cube::rotateCube(int whichAxis, double angle)
+{
+    assert(whichAxis >= 0 && whichAxis < ROTAXIS_MAX);
+    int cur;
+    double axes[3][3];
+
+    glGetIntegerv(GL_MATRIX_MODE, &cur);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadMatrixd(m_rotMat);
+    getAxes(axes);
+    glRotated(angle, axes[whichAxis][0], axes[whichAxis][1], axes[whichAxis][2]);
+    glGetDoublev(GL_MODELVIEW_MATRIX, m_rotMat);
+    glPopMatrix();
+    glMatrixMode(cur);
+}
+
 void Cube::rotate(int whichFace, int whichAngle)
 {
     assert(whichFace >= 0 && whichFace < FACELETID_MAX);
@@ -151,8 +168,45 @@ void Cube::rotate(int whichFace, int whichAngle)
     }
 }
 
+void Cube::getAxes(double axes[][3])
+{
+    double modelView[16], projection[16];
+    int viewport[4];
+    double p[4][3];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    gluUnProject(viewport[0], viewport[1], 0.0,
+            modelView, projection, viewport,
+            &p[0][0], &p[0][1], &p[0][2]);
+    gluUnProject(viewport[2] - viewport[0], viewport[1], 0.0,
+            modelView, projection, viewport,
+            &p[1][0], &p[1][1], &p[1][2]);
+    gluUnProject(viewport[0], viewport[3] - viewport[1], 0.0,
+            modelView, projection, viewport,
+            &p[2][0], &p[2][1], &p[2][2]);
+    for (int i = 0; i < 3; i++)
+    {
+        axes[ROTAXIS_X][i] = p[1][i] - p[0][i];
+        axes[ROTAXIS_Y][i] = p[2][i] - p[0][i];
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        double len = sqrt(axes[i][0] * axes[i][0] + axes[i][1] * axes[i][1] + axes[i][2] * axes[i][2]);
+        axes[i][0] /= len;
+        axes[i][1] /= len;
+        axes[i][2] /= len;
+    }
+    axes[2][0] = axes[0][1] * axes[1][2] - axes[0][2] * axes[1][1];
+    axes[2][1] = axes[0][2] * axes[1][0] - axes[0][0] * axes[1][2];
+    axes[2][2] = axes[0][0] * axes[1][1] - axes[0][1] * axes[1][0];
+}
+
 void Cube::render() const
 {
+    glPushMatrix();
+    glMultMatrixd(m_rotMat);
     for (int i = -1; i <= 1; i++)
     {
         for (int j = -1; j <= 1; j++)
@@ -173,4 +227,5 @@ void Cube::render() const
             }
         }
     }
+    glPopMatrix();
 }
