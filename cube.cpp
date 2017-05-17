@@ -58,6 +58,13 @@ Cube::Cube() :
     }
     memset(m_rotAxis, 0, sizeof(m_rotAxis));
     memset(m_rotCondition, 0, sizeof(m_rotCondition));
+	double identity[] = {
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0, 1.0, 0.0,
+		0.0, 0.0, 0.0, 1.0,
+	};
+	memcpy(m_rotMat, identity, sizeof(m_rotMat));
 }
 
 Cube::~Cube()

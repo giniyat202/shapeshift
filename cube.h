@@ -35,5 +35,6 @@ private:
     double m_rotAxis[3];
     int m_rotCondition[3];
     static int m_stepsPerTurn;
+	double m_rotMat[16];
 };
 #endif
