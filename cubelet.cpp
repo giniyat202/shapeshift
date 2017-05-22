@@ -118,6 +118,7 @@ void Cubelet::render() const
     static const double anglex[] = { 0.0, 0.0, 0.0, 0.0, 90.0, 270.0, };
     for (int i = 0; i < FACELETID_MAX; i++)
     {
+        glPushName(i);
         glPushMatrix();
         glRotated(angley[i], 0.0, 1.0, 0.0);
         glRotated(anglex[i], 1.0, 0.0, 0.0);
@@ -139,6 +140,7 @@ void Cubelet::render() const
             renderFacelet();
         }
         glPopMatrix();
+        glPopName();
     }
 }
 

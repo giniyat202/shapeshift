@@ -1,10 +1,13 @@
 #include "gamescene.h"
 #include <GL/glut.h>
+#include <iostream>
+using namespace std;
 
 std::set<GameScene*> GameScene::s_scenes;
 
 GameScene::GameScene() :
-    m_mouseRotation(false)
+    m_mouseRotation(false),
+    m_selMode(false)
 {
     m_cube.rotateCube(ROTAXIS_Y, 45.0);
     m_cube.rotateCube(ROTAXIS_X, 30.0);
@@ -26,7 +29,10 @@ void GameScene::render()
     glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
-    glLoadMatrixd(m_projection);
+    glLoadIdentity();
+    if (m_selMode)
+        glLoadMatrixd(m_pickMat);
+    glMultMatrixd(m_projection);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslated(0.0, 0.0, -7.0);
@@ -53,6 +59,8 @@ void GameScene::keyboard(unsigned char key, int x, int y)
         m_cube.beginRotation(FACELETID_BOTTOM, ANGLEID_270);
     else if (key == 'y')
         m_cube.beginRotation(FACELETID_TOP, ANGLEID_270);
+    else if (key == 'p')
+        someshit();
 }
 
 void GameScene::keyboardUp(unsigned char key, int x, int y)
@@ -73,17 +81,15 @@ void GameScene::specialUp(int key, int x, int y)
 void GameScene::reshape(int width, int height)
 {
     int viewport[] = { 0, 0, width, height };
-    int cur;
 
     memcpy(m_viewport, viewport, sizeof(m_viewport));
-    glGetIntegerv(GL_MATRIX_MODE, &cur);
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
     gluPerspective(70.0, 1.0 * width / height, 1.0, 50.0);
     glGetDoublev(GL_PROJECTION_MATRIX, m_projection);
     glPopMatrix();
-    glMatrixMode(cur);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void GameScene::mouse(int button, int state, int x, int y)
@@ -109,6 +115,42 @@ void GameScene::motion(int x, int y)
     m_cube.rotateCube(ROTAXIS_X, 0.5 * diffy);
     m_mouseX = x; m_mouseY = y;
     glutPostRedisplay();
+}
+
+void GameScene::someshit()
+{
+    struct zb
+    {
+        int count;
+        unsigned int depmin, depmax;
+        int x, y, z;
+        int col;
+    };
+    glSelectBuffer(sizeof(m_selBuf), m_selBuf);
+    glRenderMode(GL_SELECT);
+    glInitNames();
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPickMatrix(m_mouseX, m_viewport[3] - m_mouseY, 5.0, 5.0, m_viewport);
+    glGetDoublev(GL_PROJECTION_MATRIX, m_pickMat);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    m_selMode = true;
+    render();
+    m_selMode = false;
+    int count = glRenderMode(GL_RENDER);
+    zb *kos = (zb*)m_selBuf;
+    zb *ww = kos;
+    while (count--)
+    {
+        if (ww->depmin > kos->depmin)
+            ww = kos;
+        cout << "hit: " << kos->depmin << " " << kos->depmax << " " << kos->x << " " << kos->y << " " << kos->z << " " << kos->col << endl;
+        kos++;
+    }
+    cout << "min: " << ww->depmin << " " << ww->depmax << " " << ww->x << " " << ww->y << " " << ww->z << " " << ww->col << endl;
+
 }
 
 void GameScene::s_timer(int x)

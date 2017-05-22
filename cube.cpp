@@ -133,18 +133,14 @@ bool Cube::isRotating() const
 void Cube::rotateCube(int whichAxis, double angle)
 {
     assert(whichAxis >= 0 && whichAxis < ROTAXIS_MAX);
-    int cur;
     double axes[3][3];
 
-    glGetIntegerv(GL_MATRIX_MODE, &cur);
-    glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadMatrixd(m_rotMat);
     getAxes(axes);
     glRotated(angle, axes[whichAxis][0], axes[whichAxis][1], axes[whichAxis][2]);
     glGetDoublev(GL_MODELVIEW_MATRIX, m_rotMat);
     glPopMatrix();
-    glMatrixMode(cur);
 }
 
 void Cube::rotate(int whichFace, int whichAngle)
@@ -216,10 +212,13 @@ void Cube::render() const
     glMultMatrixd(m_rotMat);
     for (int i = -1; i <= 1; i++)
     {
+        glPushName(i);
         for (int j = -1; j <= 1; j++)
         {
+            glPushName(j);
             for (int k = -1; k <= 1; k++)
             {
+                glPushName(k);
                 glPushMatrix();
                 if (m_animStep != 0 &&
                         (m_rotCondition[0] == 0 || i == m_rotCondition[0]) &&
@@ -231,8 +230,11 @@ void Cube::render() const
                 glTranslated((double)i, (double)j, (double)k);
                 m_cubelet[i + 1][j + 1][k + 1].render();
                 glPopMatrix();
+                glPopName();
             }
+            glPopName();
         }
+        glPopName();
     }
     glPopMatrix();
 }

@@ -18,6 +18,7 @@ public:
     virtual void reshape(int width, int height);
     virtual void mouse(int button, int state, int x, int y);
     virtual void motion(int x, int y);
+    void someshit();
 private:
     static void s_timer(int x);
     void timer();
@@ -30,6 +31,10 @@ private:
 
     int m_viewport[4];
     double m_projection[16];
+
+    double m_pickMat[16];
+    bool m_selMode;
+    unsigned int m_selBuf[1024];
 };
 
 #endif
