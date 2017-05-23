@@ -19,11 +19,14 @@ set(SRCS
     main.cpp
     shader.cpp
     program.cpp
+    cubelet.cpp
     ${SHADER_SRCS}
 )
 set(HDRS
     shader.h
     program.h
+    cubelet.h
+    material.h
     ${SHADER_HDRS}
 )
 include_directories(

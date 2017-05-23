@@ -6,6 +6,7 @@
 #include "test_vert.h"
 #include "shader.h"
 #include "program.h"
+#include "cubelet.h"
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -36,6 +37,7 @@ bool checkall()
 GLuint VBO, VAO, EBO;
 GLuint shaderProgram;
 Program prog;
+Cubelet *c;
 
 void init()
 {
@@ -53,7 +55,7 @@ void init()
     prog.link();
     shader_test_vert.destroy();
     shader_test_frag.destroy();
-
+    c = new Cubelet(prog);
     struct customv
     {
         float pos[3];
@@ -128,9 +130,9 @@ void init()
 
     prog.use();
     vec3 light_position(0.0f, 0.0f, 0.0f);
-    vec3 light_ambient(0.2f, 0.2f, 0.2f);
+    vec3 light_ambient(0.5f, 0.5f, 0.5f);
     vec3 light_diffuse(0.8f, 0.8f, 0.8f);
-    vec3 light_specular(0.8f, 0.8f, 0.8f);
+    vec3 light_specular(1.0f, 1.0f, 1.0f);
     unsigned int light_position_id = glGetUniformLocation(prog.id(), "light.position");
     unsigned int light_ambient_id = glGetUniformLocation(prog.id(), "light.ambient");
     unsigned int light_diffuse_id = glGetUniformLocation(prog.id(), "light.diffuse");
@@ -143,6 +145,7 @@ void init()
 }
 
 float angle;
+
 void timer(int)
 {
     angle += 1.0f;
@@ -159,12 +162,12 @@ void display()
     prog.use();
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 1.0f, 100.0f);
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -7.0f));
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(1.0f, 1.0f, 0.0f));
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
     glm::mat4 modelview = view * model;
     mat3 timodel = mat3(transpose(inverse(modelview)));
     vec3 material_ambient(0.0f, 0.0f, 0.0f);
-    vec3 material_diffuse(0.5f, 0.0f, 0.0f);
-    vec3 material_specular(0.7f, 0.6f, 0.6f);
+    vec3 material_diffuse(0.01f, 0.01f, 0.01f);
+    vec3 material_specular(0.5f, 0.5f, 0.5f);
     float material_shininess = 0.25f * 128.0f;
 
     unsigned int modelview_id = glGetUniformLocation(prog.id(), "modelview");
@@ -182,10 +185,12 @@ void display()
     glUniform3fv(material_specular_id, 1, &material_specular[0]);
     glUniform1fv(material_shininess_id, 1, &material_shininess);
 
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)(0));
-    Program::unuse();
-    glBindVertexArray(0);
+    c->render(modelview);
+
+//    glBindVertexArray(VAO);
+//    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)(0));
+//    Program::unuse();
+//    glBindVertexArray(0);
     glFlush();
     glutSwapBuffers();
 }
@@ -204,6 +209,7 @@ int main(int argc, char **argv)
         timer(0);
         glutDisplayFunc(display);
         glutMainLoop();
+        delete c;
     }
     return 0;
 }
