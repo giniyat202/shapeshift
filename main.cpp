@@ -6,7 +6,7 @@
 #include "test_vert.h"
 #include "shader.h"
 #include "program.h"
-#include "cube.h"
+#include "gamescene.h"
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -35,7 +35,7 @@ bool checkall()
 }
 
 Program prog;
-Cube *c;
+GameScene *c;
 void init()
 {
     glViewport(0, 0, 800, 600);
@@ -52,7 +52,7 @@ void init()
     prog.link();
     shader_test_vert.destroy();
     shader_test_frag.destroy();
-    c = new Cube(prog);
+    c = new GameScene(prog);
 
     prog.use();
     vec3 light_position(0.0f, 0.0f, -1.0f);
@@ -70,35 +70,12 @@ void init()
     prog.unuse();
 }
 
-float angle;
-
-void timer(int)
-{
-    angle += 0.1f;
-    glutPostRedisplay();
-    c->beginRotation(FACELETID_FRONT, ANGLEID_90);
-    c->updateRotation();
-    glutTimerFunc(10, timer, 0);
-}
-
 void display()
 {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Draw our first triangle
-
-    glm::mat4 projection = glm::perspective(glm::radians(90.0f), 4.0f / 3.0f, 1.0f, 100.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -7.0f));
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 modelview = view * model;
-
-    prog.use();
-    unsigned int projection_id = glGetUniformLocation(prog.id(), "projection");
-    glUniformMatrix4fv(projection_id, 1, GL_FALSE, &projection[0][0]);
-    Program::unuse();
-
-    c->render(modelview);
+    c->render();
 
     glFlush();
     glutSwapBuffers();
@@ -115,7 +92,6 @@ int main(int argc, char **argv)
     if (checkall())
     {
         init();
-        timer(0);
         glutDisplayFunc(display);
         glutMainLoop();
         delete c;
