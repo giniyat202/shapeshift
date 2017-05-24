@@ -136,11 +136,11 @@ bool Cube::isRotating() const
     return m_animStep != 0;
 }
 
-void Cube::rotateCube(int whichAxis, float angle, const glm::mat4 &modelview, const glm::mat4 &projection)
+void Cube::rotateCube(int whichAxis, float angle, const glm::mat4 &projection)
 {
     assert(whichAxis >= 0 && whichAxis < ROTAXIS_MAX);
     glm::vec3 axes[ROTAXIS_MAX];
-    getAxes(modelview, projection, axes);
+    getAxes(m_rotMat, projection, axes);
     m_rotMat = glm::rotate(m_rotMat, angle, axes[whichAxis]);
 }
 

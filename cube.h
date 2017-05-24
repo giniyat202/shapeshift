@@ -22,7 +22,7 @@ public:
     void beginRotation(int whichFace, int whichAngle);
     void updateRotation();
     bool isRotating() const;
-    void rotateCube(int whichAxis, float angle, const glm::mat4 &modelview, const glm::mat4 &projection);
+    void rotateCube(int whichAxis, float angle, const glm::mat4 &projection);
     void render(const glm::mat4 &modelview) const;
 private:
     void rotate(int whichFace, int whichAngle);

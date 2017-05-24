@@ -14,8 +14,8 @@ GameScene::GameScene(const Program &program) :
     m_program = &program;
     reshape(800, 600);
     m_cube = new Cube(program);
-    m_cube->rotateCube(ROTAXIS_Y, 45.0, glm::mat4(1.0f), m_projection);
-    m_cube->rotateCube(ROTAXIS_X, 30.0, glm::mat4(1.0f), m_projection);
+    m_cube->rotateCube(ROTAXIS_Y, 45.0, m_projection);
+    m_cube->rotateCube(ROTAXIS_X, 30.0, m_projection);
     memset(m_keyDown, 0, sizeof(m_keyDown));
     memset(m_specialDown, 0, sizeof(m_specialDown));
     s_scenes.insert(this);
@@ -106,8 +106,8 @@ void GameScene::motion(int x, int y)
     if (!m_mouseRotation) return;
     float diffx = x - m_mouseX;
     float diffy = y - m_mouseY;
-    m_cube->rotateCube(ROTAXIS_Y, 0.5f * diffx, glm::mat4(1.0f), m_projection);
-    m_cube->rotateCube(ROTAXIS_X, 0.5f * diffy, glm::mat4(1.0f), m_projection);
+    m_cube->rotateCube(ROTAXIS_Y, 0.5f * diffx, m_projection);
+    m_cube->rotateCube(ROTAXIS_X, 0.5f * diffy, m_projection);
     m_mouseX = (float)x; m_mouseY = (float)y;
     glutPostRedisplay();
 }
@@ -155,32 +155,32 @@ void GameScene::timer()
 {
     if (m_specialDown[GLUT_KEY_LEFT])
     {
-        m_cube->rotateCube(ROTAXIS_Y, -1.0, glm::mat4(1.0), glm::mat4(m_projection));
+        m_cube->rotateCube(ROTAXIS_Y, -1.0, glm::mat4(m_projection));
         glutPostRedisplay();
     }
     else if (m_specialDown[GLUT_KEY_RIGHT])
     {
-        m_cube->rotateCube(ROTAXIS_Y, 1.0, glm::mat4(1.0), glm::mat4(m_projection));
+        m_cube->rotateCube(ROTAXIS_Y, 1.0, glm::mat4(m_projection));
         glutPostRedisplay();
     }
     if (m_specialDown[GLUT_KEY_UP])
     {
-        m_cube->rotateCube(ROTAXIS_X, -1.0, glm::mat4(1.0), glm::mat4(m_projection));
+        m_cube->rotateCube(ROTAXIS_X, -1.0, glm::mat4(m_projection));
         glutPostRedisplay();
     }
     else if (m_specialDown[GLUT_KEY_DOWN])
     {
-        m_cube->rotateCube(ROTAXIS_X, 1.0, glm::mat4(1.0), glm::mat4(m_projection));
+        m_cube->rotateCube(ROTAXIS_X, 1.0, glm::mat4(m_projection));
         glutPostRedisplay();
     }
     if (m_keyDown['/'])
     {
-        m_cube->rotateCube(ROTAXIS_Z, -1.0, glm::mat4(1.0), glm::mat4(m_projection));
+        m_cube->rotateCube(ROTAXIS_Z, -1.0, glm::mat4(m_projection));
         glutPostRedisplay();
     }
     else if (m_keyDown['.'])
     {
-        m_cube->rotateCube(ROTAXIS_Z, 1.0, glm::mat4(1.0), glm::mat4(m_projection));
+        m_cube->rotateCube(ROTAXIS_Z, 1.0, glm::mat4(m_projection));
         glutPostRedisplay();
     }
     m_cube->updateRotation();
