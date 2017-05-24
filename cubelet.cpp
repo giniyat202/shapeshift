@@ -172,7 +172,9 @@ void Cubelet::render(const glm::mat4 &modelview) const
     glUniformMatrix3fv(timodel_id, 1, GL_FALSE, &ti[0][0]);
     Program::unuse();
     applyMaterial(program, m_mtls[MATERIALID_BLANK]);
+    glPushName(FACELETID_MAX);
     renderBlank(bufs, program);
+    glPopName();
     for (int i = 0; i < FACELETID_MAX; i++)
     {
         if (!m_faceletVisible[i]) continue;
@@ -185,7 +187,9 @@ void Cubelet::render(const glm::mat4 &modelview) const
         glUniformMatrix3fv(timodel_id, 1, GL_FALSE, &ti[0][0]);
         Program::unuse();
         applyMaterial(program, m_mtls[m_faceletMtls[i]]);
+        glPushName(i);
         renderFacelet(bufs, program);
+        glPopName();
     }
 }
 

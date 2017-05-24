@@ -23,6 +23,7 @@ set(SRCS
     cube.cpp
     scene.cpp
     gamescene.cpp
+    uiscene.cpp
     ${SHADER_SRCS}
 )
 set(HDRS
@@ -33,6 +34,7 @@ set(HDRS
     material.h
     scene.h
     gamescene.h
+    uiscene.h
     ${SHADER_HDRS}
 )
 include_directories(

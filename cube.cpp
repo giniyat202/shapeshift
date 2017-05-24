@@ -3,8 +3,6 @@
 #include <GL/glut.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-const int Cube::m_stepsPerTurn = 800;
-
 Cube::Cube(const Program &program) :
     m_animStep(0),
     m_animFinalFace(0),
@@ -12,7 +10,8 @@ Cube::Cube(const Program &program) :
     m_animAngle(0.0f),
     m_angleDiff(0.0f),
     m_rotMat(1.0f),
-    m_rotAxis(0.0f)
+    m_rotAxis(0.0f),
+    m_stepsPerTurn(200)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -98,12 +97,12 @@ void Cube::beginRotation(int whichFace, int whichAngle)
         { 0, -1, 0, },
         { 0, 1, 0, },
     };
-    static const float diffmap[] = {
+    float diffmap[] = {
         360.0f / m_stepsPerTurn,
         360.0f / m_stepsPerTurn,
         -360.0f / m_stepsPerTurn,
     };
-    static const int stepmap[] = {
+    int stepmap[] = {
         m_stepsPerTurn / 4,
         m_stepsPerTurn / 2,
         m_stepsPerTurn / 4,
@@ -149,10 +148,13 @@ void Cube::render(const glm::mat4 &modelview) const
     glm::mat4 rotated = modelview * m_rotMat;
     for (int i = -1; i <= 1; i++)
     {
+        glPushName(i);
         for (int j = -1; j <= 1; j++)
         {
+            glPushName(j);
             for (int k = -1; k <= 1; k++)
             {
+                glPushName(k);
                 glm::mat4 rotated2 = rotated;
                 if (m_animStep != 0 &&
                         (m_rotCondition[0] == 0 || i == m_rotCondition[0]) &&
@@ -163,9 +165,22 @@ void Cube::render(const glm::mat4 &modelview) const
                 }
                 glm::mat4 translated = glm::translate(rotated2, glm::vec3((float)i, (float)j, (float)k));
                 m_cubelet[i + 1][j + 1][k + 1]->render(translated);
+                glPopName();
             }
+            glPopName();
         }
+        glPopName();
     }
+}
+
+int Cube::getStepsPerTurn() const
+{
+    return m_stepsPerTurn;
+}
+
+void Cube::setStepsPerTurn(int replace)
+{
+    m_stepsPerTurn = replace;
 }
 
 void Cube::rotate(int whichFace, int whichAngle)

@@ -10,7 +10,7 @@ uniform mat4 projection;
 uniform mat3 timodel;
 void main()
 {
-    Normal = timodel * normal;
+    Normal = timodel * normalize(normal);
     vec4 pos = vec4(position, 1.0);
     FragPos = vec3(modelview * pos);
     gl_Position = projection * modelview * pos;

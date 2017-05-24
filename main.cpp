@@ -42,32 +42,10 @@ void init()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
 
-    shader_test_vert.create();
-    shader_test_vert.compile();
-    shader_test_frag.create();
-    shader_test_frag.compile();
-    prog.create();
-    prog += shader_test_vert;
-    prog += shader_test_frag;
-    prog.link();
-    shader_test_vert.destroy();
-    shader_test_frag.destroy();
-    c = new GameScene(prog);
 
-    prog.use();
-    vec3 light_position(0.0f, 0.0f, -1.0f);
-    vec3 light_ambient(0.5f, 0.5f, 0.5f);
-    vec3 light_diffuse(0.8f, 0.8f, 0.8f);
-    vec3 light_specular(1.0f, 1.0f, 1.0f);
-    unsigned int light_position_id = glGetUniformLocation(prog.id(), "light.position");
-    unsigned int light_ambient_id = glGetUniformLocation(prog.id(), "light.ambient");
-    unsigned int light_diffuse_id = glGetUniformLocation(prog.id(), "light.diffuse");
-    unsigned int light_specular_id = glGetUniformLocation(prog.id(), "light.specular");
-    glUniform3fv(light_position_id, 1, &light_position[0]);
-    glUniform3fv(light_ambient_id, 1, &light_ambient[0]);
-    glUniform3fv(light_diffuse_id, 1, &light_diffuse[0]);
-    glUniform3fv(light_specular_id, 1, &light_specular[0]);
-    prog.unuse();
+    c = new GameScene;
+
+
 }
 
 void display()
@@ -80,6 +58,34 @@ void display()
     glFlush();
     glutSwapBuffers();
 }
+void keyboard(unsigned char key, int x, int y)
+{
+    c->keyboard(key, x, y);
+}
+void keyboardUp(unsigned char key, int x, int y)
+{
+    c->keyboardUp(key, x, y);
+}
+void special(int key, int x, int y)
+{
+    c->special(key, x, y);
+}
+void specialUp(int key, int x, int y)
+{
+    c->specialUp(key, x, y);
+}
+void reshape(int width, int height)
+{
+    c->reshape(width, height);
+}
+void mouse(int button, int state, int x, int y)
+{
+    c->mouse(button, state, x, y);
+}
+void motion(int x, int y)
+{
+    c->motion(x, y);
+}
 
 int main(int argc, char **argv)
 {
@@ -87,12 +93,19 @@ int main(int argc, char **argv)
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(800, 600);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
-    glutCreateWindow("asdasd");
+    glutCreateWindow("memes");
     glewInit();
     if (checkall())
     {
         init();
         glutDisplayFunc(display);
+        glutKeyboardFunc(keyboard);
+        glutKeyboardUpFunc(keyboardUp);
+        glutSpecialFunc(special);
+        glutSpecialUpFunc(specialUp);
+        glutReshapeFunc(reshape);
+        glutMouseFunc(mouse);
+        glutMotionFunc(motion);
         glutMainLoop();
         delete c;
     }

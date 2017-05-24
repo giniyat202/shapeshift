@@ -24,6 +24,8 @@ public:
     bool isRotating() const;
     void rotateCube(int whichAxis, float angle, const glm::mat4 &projection);
     void render(const glm::mat4 &modelview) const;
+    int getStepsPerTurn() const;
+    void setStepsPerTurn(int replace);
 private:
     void rotate(int whichFace, int whichAngle);
     static void getAxes(const glm::mat4 &modelview, const glm::mat4 &projection, glm::vec3 *axes);
@@ -37,7 +39,7 @@ private:
     glm::vec3 m_rotAxis;
     int m_rotCondition[3];
     glm::mat4 m_rotMat;
-    static const int m_stepsPerTurn;
+    int m_stepsPerTurn;
 };
 #endif
 
