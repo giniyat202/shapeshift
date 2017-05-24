@@ -12,7 +12,6 @@ void main()
 {
     Normal = timodel * normal;
     vec4 pos = vec4(position, 1.0);
-    FragPos = vec3(pos.x, pos.y, pos.z - 7.0);
-    //FragPos = vec3(modelview * pos);
+    FragPos = vec3(modelview * pos);
     gl_Position = projection * modelview * pos;
 }

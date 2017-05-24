@@ -21,18 +21,21 @@ uniform Light light;
 
 void main()
 {
-    vec3 ambient = light.ambient * material.ambient;
+    if (gl_FrontFacing)
+    {
+        vec3 ambient = light.ambient * material.ambient;
 
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * (diff * material.diffuse);
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(light.position - FragPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = light.diffuse * (diff * material.diffuse);
 
-    vec3 viewDir = normalize(-FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * (spec * material.specular);
+        vec3 viewDir = normalize(-FragPos);
+        vec3 reflectDir = reflect(-lightDir, norm);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+        vec3 specular = light.specular * (spec * material.specular);
 
-    vec3 result = ambient + diffuse + specular;
-    gl_FragColor = vec4(result, 1.0);
+        vec3 result = ambient + diffuse + specular;
+        gl_FragColor = vec4(result, 1.0);
+    }
 }

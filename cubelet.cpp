@@ -8,28 +8,28 @@ const Material Cubelet::m_defMtls[MATERIALID_MAX] = {
     {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.9f, 0.0f, 0.0f),
-        glm::vec3(0.1f, 0.6f, 0.6f),
+        glm::vec3(0.1f, 0.2f, 0.2f),
         32.0f
     },
     // green
     {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.1f, 0.55f, 0.1f),
-        glm::vec3(0.45f, 0.40f, 0.45f),
+        glm::vec3(0.2f, 0.1f, 0.2f),
         32.0f
     },
     // orange
     {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.9f, 0.4f, 0.08f),
-        glm::vec3(0.1f, 0.3f, 0.3f),
+        glm::vec3(0.1f, 0.15f, 0.2f),
         32.0f
     },
     // blue
     {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 0.5f),
-        glm::vec3(0.6f, 0.6f, 0.7f),
+        glm::vec3(0.2f, 0.2f, 0.1f),
         32.0f
     },
     // white
@@ -43,7 +43,7 @@ const Material Cubelet::m_defMtls[MATERIALID_MAX] = {
     {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.5f, 0.5f, 0.0f),
-        glm::vec3(0.6f, 0.6f, 0.5f),
+        glm::vec3(0.1f, 0.1f, 0.2f),
         32.0f
     },
     // black
@@ -166,7 +166,11 @@ void Cubelet::render(const glm::mat4 &modelview) const
     static const float angley[] = { 0.0f, 90.0f, 180.0f, 270.0f, 0.0f, 0.0f };
     const unsigned int modelview_id = glGetUniformLocation(m_Program->id(), "modelview");
     const unsigned int timodel_id = glGetUniformLocation(m_Program->id(), "timodel");
-
+    glm::mat3 ti = glm::mat3(glm::transpose(glm::inverse(modelview)));
+    program.use();
+    glUniformMatrix4fv(modelview_id, 1, GL_FALSE, &modelview[0][0]);
+    glUniformMatrix3fv(timodel_id, 1, GL_FALSE, &ti[0][0]);
+    Program::unuse();
     applyMaterial(program, m_mtls[MATERIALID_BLANK]);
     renderBlank(bufs, program);
     for (int i = 0; i < FACELETID_MAX; i++)
@@ -175,7 +179,7 @@ void Cubelet::render(const glm::mat4 &modelview) const
         glm::mat4 rotx = glm::rotate(glm::mat4(1.0f), glm::radians(anglex[i]), glm::vec3(1.0f, 0.0f, 0.0f));
         glm::mat4 roty = glm::rotate(glm::mat4(1.0f), glm::radians(angley[i]), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 tr = modelview * rotx * roty;
-        glm::mat3 ti = glm::mat3(glm::transpose(glm::inverse(tr)));
+        ti = glm::mat3(glm::transpose(glm::inverse(tr)));
         program.use();
         glUniformMatrix4fv(modelview_id, 1, GL_FALSE, &tr[0][0]);
         glUniformMatrix3fv(timodel_id, 1, GL_FALSE, &ti[0][0]);

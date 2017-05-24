@@ -20,12 +20,14 @@ set(SRCS
     shader.cpp
     program.cpp
     cubelet.cpp
+    cube.cpp
     ${SHADER_SRCS}
 )
 set(HDRS
     shader.h
     program.h
     cubelet.h
+    cube.h
     material.h
     ${SHADER_HDRS}
 )
